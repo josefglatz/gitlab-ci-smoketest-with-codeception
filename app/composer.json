@@ -1,0 +1,33 @@
+{
+	"_comment": "This is the root composer.json of your PHP application",
+	"name": "josefglatz/my-dummy-php-application",
+	"description": "Smoketest example with codeception",
+	"authors": [
+		{
+			"name": "Josef Glatz",
+			"email": "josefglatz@gmail.com",
+			"role": "Developer",
+			"homepage": "https://www.josefglatz.at"
+		}
+	],
+	"license": "GPL-2.0",
+	"support": {
+		"issues": "https://github.com/josefglatz/gitlab-ci-smoketest-with-codeception/issues"
+	},
+	"minimum-stability": "stable",
+	"config": {
+		"optimize-autoloader": true,
+		"secure-http": true,
+		"sort-packages": true,
+		"bin-dir": ".",
+		"platform": {
+			"php": "7.2"
+		}
+	},
+	"require": {
+		"php": "^7.2"
+	},
+	"require-dev": {
+		"codeception/codeception": "^3.1"
+	}
+}

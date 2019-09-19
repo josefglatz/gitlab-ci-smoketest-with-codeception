@@ -1,0 +1,50 @@
+stages:
+  - test
+  - builddeploy
+  - postdeploy
+
+variables:
+  COMPOSER_CACHE_DIR: $CI_PROJECT_DIR/cache-composer
+
+# Speed up builds
+cache:
+  key: "$CI_PROJECT_ID-$CI_COMMIT_REF_NAME"
+  paths:
+    - app/vendor
+
+test:composer:
+  stage: test
+  image: composer:latest
+  script:
+    - composer validate --working-dir=./app --no-check-all --strict
+
+test:php:
+  stage: test
+  image: ekreative/php-cs-fixer:2
+  script:
+    - php-cs-fixer fix --dry-run --config=app/Build/.php_cs --diff --diff-format=udiff
+
+build-n-deploy-develop:
+  stage: builddeploy
+  image: edbizarro/gitlab-ci-pipeline-php:7.2
+  script:
+    - echo "at this point your application will be deployed"
+
+postdeploy:smoketest:
+  stage: postdeploy
+  image: edbizarro/gitlab-ci-pipeline-php:7.2
+  services:
+    - selenium/standalone-chrome
+  script:
+    - composer install --working-dir=./app --no-ansi --no-interaction --no-progress --ignore-platform-reqs
+    - cd $CI_PROJECT_DIR/app
+    - ./codecept config:validate
+    - ./codecept config:validate acceptance
+    - ./codecept run acceptance --env=gitlab-ci
+  variables:
+    CODECEPTION_ACCEPTANCE_BASE_URL: https://user:andhispassword@www.typo3.org/
+  artifacts:
+    when: on_failure
+    expire_in: 10 mins
+    paths:
+      - app/tests/_output/

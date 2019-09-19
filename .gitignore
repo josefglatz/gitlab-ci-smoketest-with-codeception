@@ -1,0 +1,5 @@
+app/codecept
+app/composer.lock
+app/phpunit
+app/vendor
+/.idea
